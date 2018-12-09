@@ -47,6 +47,9 @@ while t<maxt
     uStar = u + duStar;
     vStar = v + dvStar;
     
+    %Solving eqn 17 for del*(del p)
+    [A_ddp, rhs] = eq17(uStar,vStar,u,v,dx,dy,dt,nx,ny);
+    
     Hu_0 = Hu_1;
     Hv_0 = Hv_1;
     t = t + dt;
