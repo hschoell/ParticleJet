@@ -28,6 +28,9 @@ aw = -dt/(2*d1^2*Re)*ones(args,1);
 ap = (1+dt/(d1^2*Re))*ones(args,1);
 ae = -dt/(2*d1^2*Re)*ones(args,1);
 
+% Care for Outlet Boundaries:
+ap(2*nx:nx:end-nx) = 1+dt/(d1^2*Re);
+
 % Solve using Thomas-Algorithm
 duStarStar_vec = thomas(aw,ap,ae,rhs,args,nx);   
 
