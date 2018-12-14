@@ -24,9 +24,9 @@ end
     end
 
 % Set up the operator on the left-hand-side
-aw = -dt/(d1^2*Re)*ones(args,1);
-ap = (1+2*dt/(d1^2*Re))*ones(args,1);
-ae = -dt/(d1^2*Re)*ones(args,1);
+aw = -dt/(2*d1^2*Re)*ones(args,1);
+ap = (1+dt/(d1^2*Re))*ones(args,1);
+ae = -dt/(2*d1^2*Re)*ones(args,1);
 
 % Solve using Thomas-Algorithm
 duStarStar_vec = thomas(aw,ap,ae,rhs,args,nx);   
