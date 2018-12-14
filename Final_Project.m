@@ -38,6 +38,19 @@ while t<maxt
     Hu_1 = convec(u,v,dx,dy);
     Hv_1 = convec(v',u',dy,dx)';    
     
+    % Outlet Boundaries for the H terms
+    for j = 2:ny-1    % for u
+        Hu_1(end,j) = -1/(4*dx)*(3*u(end,j)^2 - 2*u(end,j)*u(end-1,j) - u(end-1,j)^2);
+        Hu_1(end,j) = Hu_1(end,j) - 1/(4*dy)*((u1(end,j+1)+u1(end,j))*(u2(end,j+1)+u2(end-1,j+1)) - ...
+            (u1(end,j)+u1(end,j-1))*(u2(end,j)+u2(end-1,j)));
+    end
+    for j = 2:ny
+        Hv_1(end,j) = -1/(4*dy)*(v(end,j+1)^2 + 2*v(end,j+1)*v(end,j) - ...
+            2*v(end,j)*v(end,j-1) - v(end,j-1)^2);
+        Hv_1(end,j) = Hv_1(end,j) - 1/(4*dx)*(2*v(end,j)*(u(end,j)+u(end,j-1)) - ...
+            (v(end,j)+v(end-1,j))*(u(end,j)+u(end,j-1)));
+    end
+    
     % Solving eqn 14 for duStarStar
     duStarStar = eq14(Hu_0, Hu_1, u, dx, dy, dt, Re);
     dvStarStar = eq14(Hv_0, Hv_1, v, dx, dy, dt, Re);
