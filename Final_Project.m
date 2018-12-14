@@ -21,8 +21,8 @@ dy=ym(2)-ym(1);                % Grid spacing in y
 %setting up initial conditions, zero everywhere
 u = zeros(nx+1,ny); %store velocities at face centers
 v = zeros(nx,ny+1); %store velocities at face centers
-p = zeros(nx+1,ny+1);
-dp = zeros(nx+1,ny+1);
+p = zeros(nx,ny);
+dp = zeros(nx,ny);
 
 u(1,:) = exp(-(ym - 0.5).^2./(R^2)); %initialize u with jet conditions
 
@@ -38,19 +38,6 @@ while t<maxt
     Hu_1 = convec(u,v,dx,dy);
     Hv_1 = convec(v',u',dy,dx)';    
     
-    % Outlet Boundaries for the H terms
-    for j = 2:ny-1    % for u
-        Hu_1(end,j) = -1/(4*dx)*(3*u(end,j)^2 - 2*u(end,j)*u(end-1,j) - u(end-1,j)^2);
-        Hu_1(end,j) = Hu_1(end,j) - 1/(4*dy)*((u1(end,j+1)+u1(end,j))*(u2(end,j+1)+u2(end-1,j+1)) - ...
-            (u1(end,j)+u1(end,j-1))*(u2(end,j)+u2(end-1,j)));
-    end
-    for j = 2:ny      % for v
-        Hv_1(end,j) = -1/(4*dy)*(v(end,j+1)^2 + 2*v(end,j+1)*v(end,j) - ...
-            2*v(end,j)*v(end,j-1) - v(end,j-1)^2);
-        Hv_1(end,j) = Hv_1(end,j) - 1/(4*dx)*(2*v(end,j)*(u(end,j)+u(end,j-1)) - ...
-            (v(end,j)+v(end-1,j))*(u(end,j)+u(end,j-1)));
-    end
-    
     % Solving eqn 14 for duStarStar
     duStarStar = eq14(Hu_0, Hu_1, u, dx, dy, dt, Re);
     dvStarStar = eq14(Hv_0, Hv_1, v, dx, dy, dt, Re);
@@ -63,11 +50,9 @@ while t<maxt
     vStar = v + dvStar;
     
     %Solving eqn 17 for del*(del p)
-    [A_ddp, rhs] = eq17(uStar,vStar,u,v,dx,dy,dt,nx,ny);
-    
-    
-    
-    p_0 = solveCG(A_ddp, rhs, zeros(8192,1));
+    [ap,ae,aw,an,as,rhs] = eq17(uStar,vStar,u,v,dx,dy,dt,nx,ny);
+       
+    p_0 = solveSOR(aw,ae,an,as,ap,rhs,p,nx,ny);
     
     for i = 1:nx
         for j = 1:ny
@@ -75,13 +60,9 @@ while t<maxt
             p(i,j) = p_0(b);
         end
     end
-    
-   
-    p(:,ny+1) = p(:,ny);
-    p(nx+1,:) = p(nx,:);
-    
-    for i = 2:nx+1
-        for j = 2:ny+1
+        
+    for i = 2:nx
+        for j = 2:ny
             dp(i,j) = (p(i,j) - p(i-1,j))/dx + (p(i,j) - p(i,j-1))/dy;
         end
     end
