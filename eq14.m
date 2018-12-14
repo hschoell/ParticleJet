@@ -1,8 +1,9 @@
 function duStarStar = eq14(H_0, H_1, u1, d1, d2, dt, Re)
 % This function calculates delta u star star using eqn 14. 
-   
+
 % Determine Number of unknowns
 args = length(u1(1,:))*length(u1(:,1));
+nx = length(u1(:,1));
 
 % Set up the right-hand side. Again; ignore the boundaries; lexiographic
 % ordering
@@ -15,13 +16,20 @@ for j = 2:length(u1(1,:))-1 % Iterate over y
     end
 end
 
+    for k = 1:129
+        for l = 1:64
+            b = k+129*(l-1);
+            rhs1(k,l) = rhs(b);
+        end
+    end
+
 % Set up the operator on the left-hand-side
-aw = -dt/(2*d1^2*Re)*ones(args,1);
-ap = (1+dt/(d1^2*Re))*ones(args,1);
-ae = -dt/(2*d1^2*Re)*ones(args,1);
+aw = -dt/(d1^2*Re)*ones(args,1);
+ap = (1+2*dt/(d1^2*Re))*ones(args,1);
+ae = -dt/(d1^2*Re)*ones(args,1);
 
 % Solve using Thomas-Algorithm
-duStarStar_vec = thomas(aw,ap,ae,rhs,args);
+duStarStar_vec = thomas(aw,ap,ae,rhs,args,nx);   
 
 % Put back into matrix form
 duStarStar = reshape(duStarStar_vec,[length(u1(:,1)),length(u1(1,:))]);

@@ -21,6 +21,8 @@ dy=ym(2)-ym(1);                % Grid spacing in y
 %setting up initial conditions, zero everywhere
 u = zeros(nx+1,ny); %store velocities at face centers
 v = zeros(nx,ny+1); %store velocities at face centers
+p = zeros(nx+1,ny+1);
+dp = zeros(nx+1,ny+1);
 
 u(1,:) = exp(-(ym - 0.5).^2./(R^2)); %initialize u with jet conditions
 
@@ -50,9 +52,35 @@ while t<maxt
     %Solving eqn 17 for del*(del p)
     [A_ddp, rhs] = eq17(uStar,vStar,u,v,dx,dy,dt,nx,ny);
     
+    
+    
+    p_0 = solveCG(A_ddp, rhs, zeros(8192,1));
+    
+    for i = 1:nx
+        for j = 1:ny
+            b = i+nx*(j-1);
+            p(i,j) = p_0(b);
+        end
+    end
+    
+   
+    p(:,ny+1) = p(:,ny);
+    p(nx+1,:) = p(nx,:);
+    
+    for i = 2:nx+1
+        for j = 2:ny+1
+            dp(i,j) = (p(i,j) - p(i-1,j))/dx + (p(i,j) - p(i,j-1))/dy;
+        end
+    end
+    
+    u = uStar - dt*(dp(:,1:ny));
+    v = vStar - dt*(dp(1:nx,:));
+    
     Hu_0 = Hu_1;
     Hv_0 = Hv_1;
     t = t + dt;
+    
+    surf(u)
 end
 
-surf(u)
+
