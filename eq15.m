@@ -1,9 +1,10 @@
 function duStar = eq15(duStarStar, d2, dt, Re)
-% This function calculates duStar based uporn equation 15
+% This function calculates duStar based upon equation 15
 
 % Determine Number of unknowns
-args = length(duStarStar(1,:))*length(duStarStar(:,1));
 nx = length(duStarStar(:,1));
+ny = length(duStarStar(1,:));
+args = nx*ny;
 
 % Set up the operator on the left-hand-side
 as = -dt/(2*d2^2*Re)*ones(args,1);
@@ -16,5 +17,5 @@ rhs = reshape(duStarStar',[1,args])';
 
 % Solve the system using the Thomas-Algorithm
 duStar_vec = thomas(as,ap,an,rhs,args,nx);
-duStar = reshape(duStar_vec,[length(duStarStar(1,:)),length(duStarStar(:,1))])';
+duStar = reshape(duStar_vec,[ny,nx])';
 end

@@ -1,11 +1,11 @@
-function x_1 = solveSOR(aw,ae,an,as,ap,rhs,x_1,nx,ny)
+function [x_1,res_end] = solveSOR(aw,ae,an,as,ap,rhs,x_1,nx,ny)
 % This function solves a linear system of equations using
 % Successive-Over-Relaxation. It takes the relevant diagonals of A and the
 % position of which in d. Also the right hand side and an initial guess.
 
 lim = 1e-7; % residual limit
-maxIt = 10000; % iterational limit
-omega = 1.4; % relaxation factor
+maxIt = 100000; % iterational limit
+omega = 1.5; % relaxation factor
 
 res = [1];
 % Initialize x
@@ -26,10 +26,11 @@ while res(end)>lim && length(res)<maxIt
     x_1 = x_1 + omega*(x_s-x_1);
     res = [res norm(x_1-x_0)];
 end
+res_end = res(end);
 
-figure(1)
-semilogy(1:length(res),res,'LineWidth',2)
-title('Residuals');
-xlabel('Iterations');
-ylabel('\epsilon_k');
+% figure(1)
+% semilogy(1:length(res),res,'LineWidth',2)
+% title('Residuals');
+% xlabel('Iterations');
+% ylabel('\epsilon_k');
 end
