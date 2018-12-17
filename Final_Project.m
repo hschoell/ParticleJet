@@ -91,7 +91,9 @@ while t<maxt
     d=[-nx -1 0 1 nx];
     A=(spdiags(B, d, nx*ny, nx*ny))';
     p_test = A\rhs;
-    p_0 = reshape(p_test,[nx,ny]);
+    %p_0 = reshape(p_test,[nx,ny]);
+    p_cg = solveCG(A,rhs,reshape(p,[nx*ny,1]));
+    p_0 = reshape(p_cg,[nx,ny]);
     [u, v] = eq18(p_0, uStar, vStar,dt,dx,dy);
     
     % Output the divergence of the velocity field to check solenoidality 
