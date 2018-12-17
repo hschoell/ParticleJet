@@ -5,8 +5,8 @@
 clear all; close all; clc;
 
 % Parameters
-dt = 1e-2;
-maxt = 1;
+dt = 2e-2;
+maxt = 25;
 t = 0;
 Re = 100;
 St = Re*1e-2;
@@ -81,15 +81,25 @@ while t<maxt
     %Solving eqn 17 for del*(del p)
     [ap,ae,aw,an,as,rhs] = eq17(uStar,vStar,dx,dy,dt,nx,ny);
        
-    [p_0,res] = solveSOR(aw,ae,an,as,ap,rhs,p,nx,ny);
+    %[p_0,res] = solveSOR(aw,ae,an,as,ap,rhs,p,nx,ny);
     
+    B=[an ae ap aw as];
+    d=[-nx -1 0 1 nx];
+    A=(spdiags(B, d, nx*ny, nx*ny))';
+    p_test = A\rhs;
+    p_0 = reshape(p_test,[nx,ny]);
     [u, v] = eq18(p_0, uStar, vStar,dt,dx,dy);
+    
+    % Output the divergence of the velocity field to check solenoidality 
+    max_div = max(max((u(2:end,:)-u(1:end-1,:))/dx + ...
+        (v(:,2:end)-v(:,1:end-1))/dy));
     
     Hu_0 = Hu_1;
     Hv_0 = Hv_1;
-    t = t + dt;
+    t = t + dt
     p = p_0;
-    surf(u)
+    figure(1)
+    contourf(u)
+    figure(3)
+    contourf(v)
 end
-
-

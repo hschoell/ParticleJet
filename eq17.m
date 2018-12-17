@@ -16,18 +16,18 @@ for j = 1:ny %Iterating over y
 end
 
 % For plotting puposes only
-    for k = 1:nx
-        for l = 1:ny
-            b = k+nx*(l-1);
-            rhs1(k,l) = rhs(b);
-        end
-    end
+%     for k = 1:nx
+%         for l = 1:ny
+%             b = k+nx*(l-1);
+%             rhs1(k,l) = rhs(b);
+%         end
+%     end
 
 % Calculating the diagonals of the operator matrix
 aw = 1/dx.^2*ones(args,1);
 ae = 1/dx.^2*ones(args,1);
-an = 1/dx.^2*ones(args,1);
-as = 1/dx.^2*ones(args,1);
+an = 1/dy.^2*ones(args,1);
+as = 1/dy.^2*ones(args,1);
 ap = -2*(1/dx.^2+1/dy.^2)*ones(args,1);
 % Correct diagonal values at boundaries (zerogradient everywhere)
 ap(nx+1:nx:nx*(ny-1)-nx+1)=-1/dx.^2-2/dy.^2; %western boundary

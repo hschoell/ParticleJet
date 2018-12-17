@@ -24,13 +24,13 @@ for j = 2:ny-1
             +1/d2^2*(-u1(i,j)+u1(i,j-1)));
 end
 
-% For plotting purposes only (???)
-for k = 1:nx
-    for l = 1:ny
-        b = k+nx*(l-1);
-        rhs1(k,l) = rhs(b);
-    end
-end
+% % For plotting purposes only (???)
+% for k = 1:nx
+%     for l = 1:ny
+%         b = k+nx*(l-1);
+%         rhs1(k,l) = rhs(b);
+%     end
+% end
 
 % Set up the operator on the left-hand-side
 aw = -dt/(2*d1^2*Re)*ones(args,1);
@@ -44,11 +44,6 @@ for m=1:nx
             aw(d) = 0;
         elseif m == nx% && n ~=ny
             ae(d) = 0;
-        end
-        if n == 1% && m ~= nx
-            as(d) = 0;
-        elseif n == ny% && m ~= nx
-            an(d) = 0;
         end
     end
 end

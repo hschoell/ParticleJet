@@ -20,6 +20,4 @@ end
 
 u = uStar - dt.*(dpx);
 v = vStar - dt.*(dpy);
-
-a = u+v;
 end
