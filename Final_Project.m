@@ -9,8 +9,9 @@ dt = 2e-2;
 maxt = 25;
 t = 0;
 Re = 100;
-St = Re*1e-2;
+St = 0.6;
 R = 0.05;
+i = 1;
 
 % Create uniform mesh
 nx=128;                        % Number of grid points in x
@@ -37,13 +38,16 @@ Hu_1 = zeros(nx+1,ny);
 Hv_0 = zeros(nx,ny+1);
 Hv_1 = zeros(nx,ny+1);
 
+%a vector for tracking the particles
+M = zeros(1250,5);
+
 %% Advancing in time
 
 while t<maxt
     % Step 1
     % setting up H
     Hu_1 = convec(u,v,dx,dy);
-    Hv_1 = convec(v',u',dy,dx)';    
+    Hv_1 = convec(v',u',dy,dx)';  
     
     % Outlet Boundaries for the H terms
     for j = 2:ny-1    % for u
@@ -76,7 +80,7 @@ while t<maxt
     % Make sure, mass is conserved (additively):
     u_diff = u_in - sum(uStar(nx+1,:));
     uStar(nx+1,:) = uStar(nx+1,:)+(u_diff/ny);
-    sum(uStar(1,:)-uStar(nx+1,:))
+    sum(uStar(1,:)-uStar(nx+1,:));
     
     %Solving eqn 17 for del*(del p)
     [ap,ae,aw,an,as,rhs] = eq17(uStar,vStar,dx,dy,dt,nx,ny);
@@ -93,13 +97,25 @@ while t<maxt
     % Output the divergence of the velocity field to check solenoidality 
     max_div = max(max((u(2:end,:)-u(1:end-1,:))/dx + ...
         (v(:,2:end)-v(:,1:end-1))/dy));
+ 
+    %update the velocity and position of each particle
+    M = particles(M, u, v, i, dx, dy, dt, St);    
     
     Hu_0 = Hu_1;
     Hv_0 = Hv_1;
     t = t + dt
     p = p_0;
-    figure(1)
+    %plotting
+    %particles
+    figure(1);
+    plot(M(:,2),M(:,3),'.');
+    xlim([0,2]);
+    ylim([0,1]);
+    %u velocity
+    figure(2)
     contourf(u)
-    figure(3)
-    contourf(v)
+%     %v velocity
+%     figure(3)
+%     surf(v)
+     i = i + 1;
 end
