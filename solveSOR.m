@@ -5,7 +5,7 @@ function [x_1,res_end] = solveSOR(aw,ae,an,as,ap,rhs,x_1,nx,ny)
 
 lim = 1e-7; % residual limit
 maxIt = 100000; % iterational limit
-omega = 1.5; % relaxation factor
+omega = 1; % relaxation factor
 
 res = [1];
 % Initialize x
@@ -20,7 +20,7 @@ while res(end)>lim && length(res)<maxIt
             x_s(i,j)=-1/ap(b)*(as(b)*x_s(i,1+mod(j-2,ny))...
                 + aw(b)*x_s(1+mod(i-2,nx),j)...
                 + ae(b)*x_1(1+mod(i,nx),j)...
-                + an(b)*x_1(i,1+mod(j,ny)) + rhs(b));
+                + an(b)*x_1(i,1+mod(j,ny)) - rhs(b));
         end
     end
     x_1 = x_1 + omega*(x_s-x_1);
@@ -28,9 +28,9 @@ while res(end)>lim && length(res)<maxIt
 end
 res_end = res(end);
 
-% figure(1)
-% semilogy(1:length(res),res,'LineWidth',2)
-% title('Residuals');
-% xlabel('Iterations');
-% ylabel('\epsilon_k');
+figure(1)
+semilogy(1:length(res),res)
+title('Residuals');
+xlabel('Iterations');
+ylabel('\epsilon_k');
 end
