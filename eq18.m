@@ -5,6 +5,7 @@ nx = length(p(:,1));
 ny = length(p(1,:));
 dpx = zeros(nx+1,ny);
 dpy = zeros(nx,ny+1);
+v = zeros(size(vStar));
 
 for i = 2:nx
     for j = 1:ny
@@ -19,5 +20,6 @@ for i = 1:nx
 end
 
 u = uStar - dt.*(dpx);
-v = vStar - dt.*(dpy);
+v(2:end-1,:) = vStar(2:end-1,:) - dt.*(dpy(2:end-1,:));
+% v = vStar - dt.*(dpy);
 end

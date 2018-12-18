@@ -8,11 +8,10 @@ function x_1 = solveCG(A,rhs,x_1)
 K = full(A);
 [~,p] = chol(A) % 0 if pd 
 sym = issymmetric(A)
-% if p 
-%     A = [zeros(size(A)) A; A' zeros(size(A))];
-%     rhs = [rhs;zeros(size(rhs))];
-%     x_1 = [zeros(size(x_1));x_1];
-% end
+if p 
+    A = -1.*A;
+    rhs = -1.*rhs;
+end
 % 
 % % Check again
 % K = full(A);

@@ -5,10 +5,10 @@
 clear all; close all; clc;
 
 % Parameters
-dt = 2e-2;
-maxt = 25;
+dt = 2e-3;
+maxt = 3;
 t = 0;
-Re = 100;
+Re = 1000;
 St = 0.6;
 R = 0.05;
 i = 1;
@@ -90,7 +90,7 @@ while t<maxt
     B=[an ae ap aw as];
     d=[-nx -1 0 1 nx];
     A=(spdiags(B, d, nx*ny, nx*ny))';
-    p_test = A\rhs;
+%     p_test = A\rhs;
     %p_0 = reshape(p_test,[nx,ny]);
     p_cg = solveCG(A,rhs,reshape(p,[nx*ny,1]));
     p_0 = reshape(p_cg,[nx,ny]);
@@ -108,16 +108,20 @@ while t<maxt
     t = t + dt
     p = p_0;
     %plotting
-    %particles
-    figure(1);
-    plot(M(:,2),M(:,3),'.');
-    xlim([0,2]);
-    ylim([0,1]);
+%     %particles
+%     figure(1);
+%     hs=streamslice(x(2:end),y(2:end),u(1:nx,1:ny)',v(1:nx,1:ny)');
+%     set(hs,'color','k','linewidth',1)
+%     plot(M(:,2),M(:,3),'.');
+%     xlim([0,2]);
+%     ylim([0,1]);
     %u velocity
-    figure(2)
-    contourf(u)
+%     figure(2)
+%     contourf(u)
 %     %v velocity
 %     figure(3)
 %     surf(v)
      i = i + 1;
 end
+
+plotting
