@@ -20,6 +20,6 @@ for i = 1:nx
 end
 
 u = uStar - dt.*(dpx);
-v(2:end-1,:) = vStar(2:end-1,:) - dt.*(dpy(2:end-1,:));
-% v = vStar - dt.*(dpy);
+% v(2:end-1,:) = vStar(2:end-1,:) - dt.*(dpy(2:end-1,:));
+v = vStar - dt.*(dpy);
 end

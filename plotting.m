@@ -11,6 +11,6 @@
     %u velocity
     figure(2)
     surf(u')
-%     %v velocity
+    %v velocity
     figure(3)
     surf(v')

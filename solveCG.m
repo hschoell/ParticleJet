@@ -5,17 +5,12 @@ function x_1 = solveCG(A,rhs,x_1)
 % ignoring whether its spd or not
 
 %check whether positive definite
-K = full(A);
-[~,p] = chol(A) % 0 if pd 
-sym = issymmetric(A)
+[~,p] = chol(A); % 0 if pd 
+%sym = issymmetric(A); %this was for checking purposes only
 if p 
     A = -1.*A;
     rhs = -1.*rhs;
 end
-% 
-% % Check again
-% K = full(A);
-% [~,p] = chol(A) % 0 if pd 
 
 lim = 1e-7; % residual limit
 maxIt = 1000; % iterational limit
@@ -39,15 +34,5 @@ while sqrt(rho(end))>lim && length(rho)<maxIt
     r = r - a*e;
     rho = [rho r'*r];
 end
-% x_1=flip(x_1);
 
-% length(rho)
-% x_1 = x_1 - (1/(length(x_1)))*sum(x_1);
-% sum(x_1)
-% figure(2)
-% clf
-% semilogy(1:length(rho),rho,'LineWidth',2)
-% title('Residuals');
-% xlabel('Iterations');
-% ylabel('\epsilon_k');
 end
